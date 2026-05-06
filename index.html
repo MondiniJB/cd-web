@@ -3,39 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CD Customizer PRO</title>
+    <title>CD Customizer V2</title>
     <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div class="carousel-container">
         <div class="cd-stack" id="cdStack"></div>
     </div>
-
     <div class="ui-layer">
         <div class="edit-box">
             <input type="text" id="nameInput" placeholder="Escribí aquí..." maxlength="12">
         </div>
-
         <div class="dock">
-            <div class="color-swatch" id="colorBtn" title="Cambiar color de texto"></div>
+            <div class="color-swatch" id="colorBtn"></div>
             <input type="color" id="colorPicker" hidden>
-            
-            <button class="icon-btn" onclick="document.getElementById('imageInput').click()" title="Subir Imagen de Fondo">🖼️</button>
+            <button class="icon-btn" onclick="document.getElementById('imageInput').click()">🖼️</button>
             <input type="file" id="imageInput" accept="image/*" hidden>
-            
-            <button class="icon-btn" onclick="exportCD()" title="Exportar como PNG">💾</button>
-
+            <button class="icon-btn" onclick="exportCD()">💾</button>
             <div class="nav-dots" id="navDots"></div>
-
             <div class="controls">
                 <button onclick="move(-1)">PREV</button>
                 <button onclick="move(1)">NEXT</button>
             </div>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
