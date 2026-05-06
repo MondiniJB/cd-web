@@ -2,9 +2,9 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CD Customizer OS</title>
-    <!-- Fuente tipo marcador/lápiz -->
-    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+    <title>CD Archive - Hand Drawn Edition</title>
+    <!-- Importamos la tipografía tipo marcador -->
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,20 +13,22 @@
         <div class="cd-stack" id="cdStack"></div>
     </div>
 
-    <div class="editor-panel">
-        <input type="text" id="topTextInput" placeholder="Texto superior..." maxlength="15">
-        <input type="text" id="bottomTextInput" placeholder="Texto inferior..." maxlength="15">
-    </div>
-
     <div class="ui-layer">
         <div class="dock">
             <div class="color-swatch" id="colorBtn" style="background: #00f2ff;"></div>
             <input type="color" id="colorPicker" hidden>
+            
             <div class="nav-dots" id="navDots"></div>
+
             <div class="controls">
                 <button onclick="move(-1)">prev</button>
                 <button onclick="move(1)">next</button>
             </div>
+        </div>
+        
+        <!-- Input simple para cambiar el nombre del CD actual -->
+        <div class="edit-box">
+            <input type="text" id="nameInput" placeholder="Escribí acá..." maxlength="12">
         </div>
     </div>
 
