@@ -3,8 +3,7 @@ const albums = [
     { name: 'FKA', color: '#00f2ff', img: null },
     { name: 'BURIAL', color: '#00ff66', img: null },
     { name: 'HELLO', color: '#ff00ff', img: null },
-    { name: 'TRIAL', color: '#ffff00', img: null },
-    { name: 'Xavier', color: '#ffffff', img: null }
+    { name: 'TRIAL', color: '#ffff00', img: null }
 ];
 
 let currentIndex = 2;
@@ -32,7 +31,6 @@ function init() {
 function updateStack() {
     const cds = document.querySelectorAll('.cd');
     const dots = document.querySelectorAll('.dot');
-    
     nameInput.value = albums[currentIndex].name;
     colorBtn.style.background = albums[currentIndex].color;
 
@@ -41,10 +39,8 @@ function updateStack() {
         const translateX = offset * 280; 
         const translateZ = -Math.abs(offset) * 200;
         const rotateY = offset * -35;
-        const opacity = Math.abs(offset) > 2 ? 0 : 1;
-
         cd.style.transform = `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg)`;
-        cd.style.opacity = opacity;
+        cd.style.opacity = Math.abs(offset) > 2 ? 0 : 1;
         cd.style.zIndex = 100 - Math.abs(offset);
         dots[i].className = i === currentIndex ? 'dot active' : 'dot';
     });
@@ -57,14 +53,12 @@ function move(dir) {
     }
 }
 
-// Edición de texto
 nameInput.addEventListener('input', (e) => {
     const val = e.target.value.toUpperCase();
     albums[currentIndex].name = val;
     document.getElementById(`cd-${currentIndex}`).querySelector('.cd-label').innerText = val;
 });
 
-// Selector de color
 colorBtn.onclick = () => picker.click();
 picker.oninput = (e) => {
     const color = e.target.value;
@@ -73,7 +67,6 @@ picker.oninput = (e) => {
     document.getElementById(`cd-${currentIndex}`).querySelector('.cd-label').style.color = color;
 };
 
-// Subida de imagen
 document.getElementById('imageInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -82,19 +75,15 @@ document.getElementById('imageInput').addEventListener('change', function(e) {
             const url = event.target.result;
             albums[currentIndex].img = url;
             const currentCD = document.getElementById(`cd-${currentIndex}`);
-            let bg = currentCD.querySelector('.cd-bg-image');
-            if(!bg) {
-                bg = document.createElement('img');
-                bg.className = 'cd-bg-image';
-                currentCD.prepend(bg);
-            }
+            let bg = currentCD.querySelector('.cd-bg-image') || document.createElement('img');
+            bg.className = 'cd-bg-image';
             bg.src = url;
+            currentCD.prepend(bg);
         };
         reader.readAsDataURL(file);
     }
 });
 
-// EXPORTACIÓN PNG
 function exportCD() {
     const album = albums[currentIndex];
     const canvas = document.createElement('canvas');
@@ -102,11 +91,36 @@ function exportCD() {
     const s = 1000; 
     canvas.width = s; canvas.height = s;
 
-    // Fondo base
+    // Fondo
     ctx.beginPath();
     ctx.arc(s/2, s/2, s/2, 0, Math.PI*2);
     ctx.fillStyle = '#181818';
     ctx.fill();
+
+    const drawAll = () => {
+        // Agujero central
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.beginPath();
+        ctx.arc(s/2, s/2, s * 0.185, 0, Math.PI*2);
+        ctx.fill();
+        ctx.globalCompositeOperation = 'source-over';
+
+        // Texto en la parte inferior
+        ctx.font = 'bold 90px "Permanent Marker"';
+        ctx.fillStyle = album.color;
+        ctx.textAlign = 'center';
+        
+        ctx.save();
+        ctx.translate(s/2, s * 0.82); // Posicionado abajo
+        ctx.rotate(-5 * Math.PI / 180);
+        ctx.fillText(album.name, 0, 0);
+        ctx.restore();
+
+        const link = document.createElement('a');
+        link.download = `CD_${album.name}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+    };
 
     if (album.img) {
         const img = new Image();
@@ -116,38 +130,14 @@ function exportCD() {
             ctx.beginPath();
             ctx.arc(s/2, s/2, s/2, 0, Math.PI*2);
             ctx.clip();
+            ctx.globalAlpha = 0.8;
             ctx.drawImage(img, 0, 0, s, s);
             ctx.restore();
-            drawTextAndDownload(canvas, ctx, s, album);
+            drawAll();
         };
     } else {
-        drawTextAndDownload(canvas, ctx, s, album);
+        drawAll();
     }
-}
-
-function drawTextAndDownload(canvas, ctx, s, album) {
-    // Agujero central transparente
-    ctx.globalCompositeOperation = 'destination-out';
-    ctx.beginPath();
-    ctx.arc(s/2, s/2, s * 0.19, 0, Math.PI*2);
-    ctx.fill();
-    ctx.globalCompositeOperation = 'source-over';
-
-    // Texto Marcador
-    ctx.font = 'bold 100px "Permanent Marker"';
-    ctx.fillStyle = album.color;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.save();
-    ctx.translate(s/2, s/2);
-    ctx.rotate(-10 * Math.PI / 180);
-    ctx.fillText(album.name, 0, 0);
-    ctx.restore();
-
-    const link = document.createElement('a');
-    link.download = `CD_${album.name}.png`;
-    link.href = canvas.toDataURL();
-    link.click();
 }
 
 init();
