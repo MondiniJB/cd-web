@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CD Archive - Hand Drawn Edition</title>
-    <!-- Importamos la tipografía tipo marcador -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CD Customizer PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -14,21 +14,25 @@
     </div>
 
     <div class="ui-layer">
+        <div class="edit-box">
+            <input type="text" id="nameInput" placeholder="Escribí aquí..." maxlength="12">
+        </div>
+
         <div class="dock">
-            <div class="color-swatch" id="colorBtn" style="background: #00f2ff;"></div>
+            <div class="color-swatch" id="colorBtn" title="Cambiar color de texto"></div>
             <input type="color" id="colorPicker" hidden>
             
+            <button class="icon-btn" onclick="document.getElementById('imageInput').click()" title="Subir Imagen de Fondo">🖼️</button>
+            <input type="file" id="imageInput" accept="image/*" hidden>
+            
+            <button class="icon-btn" onclick="exportCD()" title="Exportar como PNG">💾</button>
+
             <div class="nav-dots" id="navDots"></div>
 
             <div class="controls">
-                <button onclick="move(-1)">prev</button>
-                <button onclick="move(1)">next</button>
+                <button onclick="move(-1)">PREV</button>
+                <button onclick="move(1)">NEXT</button>
             </div>
-        </div>
-        
-        <!-- Input simple para cambiar el nombre del CD actual -->
-        <div class="edit-box">
-            <input type="text" id="nameInput" placeholder="Escribí acá..." maxlength="12">
         </div>
     </div>
 
