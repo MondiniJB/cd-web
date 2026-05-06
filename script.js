@@ -1,28 +1,27 @@
 const albums = [
-    { top: 'ASK ME', bottom: 'Hell', color: '#ff3300' },
-    { top: 'DKD', bottom: 'FKA', color: '#00f2ff' },
-    { top: 'Xavier', bottom: 'Burial', color: '#00ff66' },
-    { top: 'HELLO', bottom: 'World', color: '#ff00ff' },
-    { top: 'TRIAL', bottom: 'Mode', color: '#ffff00' }
+    { name: 'HELL', color: '#ff3300' },
+    { name: 'FKA', color: '#00f2ff' },
+    { name: 'BURIAL', color: '#00ff66' },
+    { name: 'HELLO', color: '#ff00ff' },
+    { name: 'TRIAL', color: '#ffff00' },
+    { name: 'Xavier', color: '#ffffff' }
 ];
 
 let currentIndex = 2;
 const stack = document.getElementById('cdStack');
 const dotContainer = document.getElementById('navDots');
-const topInput = document.getElementById('topTextInput');
-const bottomInput = document.getElementById('bottomTextInput');
+const nameInput = document.getElementById('nameInput');
 
 function init() {
     albums.forEach((album, i) => {
+        // Crear el disco
         const cd = document.createElement('div');
         cd.className = 'cd';
         cd.id = `cd-${i}`;
-        cd.innerHTML = `
-            <div class="text-top" style="color: ${album.color}">${album.top}</div>
-            <div class="text-bottom" style="color: ${album.color}">${album.bottom}</div>
-        `;
+        cd.innerHTML = `<span class="cd-label" style="color: ${album.color}">${album.name}</span>`;
         stack.appendChild(cd);
 
+        // Crear el punto de navegación
         const dot = document.createElement('div');
         dot.className = i === currentIndex ? 'dot active' : 'dot';
         dotContainer.appendChild(dot);
@@ -34,54 +33,50 @@ function updateStack() {
     const cds = document.querySelectorAll('.cd');
     const dots = document.querySelectorAll('.dot');
     
-    // Sincronizar inputs con el CD actual
-    topInput.value = albums[currentIndex].top;
-    bottomInput.value = albums[currentIndex].bottom;
+    // Sincronizar input con el disco actual
+    nameInput.value = albums[currentIndex].name;
 
     cds.forEach((cd, i) => {
         const offset = i - currentIndex;
+        
+        // Efecto Coverflow a lo ancho
         const translateX = offset * 280; 
-        const translateZ = -Math.abs(offset) * 250;
+        const translateZ = -Math.abs(offset) * 200;
         const rotateY = offset * -35;
+        const opacity = Math.abs(offset) > 2 ? 0 : 1;
 
         cd.style.transform = `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg)`;
-        cd.style.opacity = Math.abs(offset) > 2 ? 0 : 1;
+        cd.style.opacity = opacity;
         cd.style.zIndex = 100 - Math.abs(offset);
+        
         dots[i].className = i === currentIndex ? 'dot active' : 'dot';
     });
 }
 
 function move(dir) {
-    currentIndex = Math.max(0, Math.min(albums.length - 1, currentIndex + dir));
-    updateStack();
+    if (currentIndex + dir >= 0 && currentIndex + dir < albums.length) {
+        currentIndex += dir;
+        updateStack();
+    }
 }
 
-// Eventos de edición en tiempo real
-topInput.addEventListener('input', (e) => {
-    albums[currentIndex].top = e.target.value;
-    const currentCD = document.getElementById(`cd-${currentIndex}`);
-    currentCD.querySelector('.text-top').innerText = e.target.value;
+// Cambiar texto en tiempo real
+nameInput.addEventListener('input', (e) => {
+    const val = e.target.value.toUpperCase();
+    albums[currentIndex].name = val;
+    document.getElementById(`cd-${currentIndex}`).querySelector('.cd-label').innerText = val;
 });
 
-bottomInput.addEventListener('input', (e) => {
-    albums[currentIndex].bottom = e.target.value;
-    const currentCD = document.getElementById(`cd-${currentIndex}`);
-    currentCD.querySelector('.text-bottom').innerText = e.target.value;
-});
-
-// Selector de Color
+// Color Picker
 const colorBtn = document.getElementById('colorBtn');
 const picker = document.getElementById('colorPicker');
 
 colorBtn.onclick = () => picker.click();
 picker.oninput = (e) => {
-    const newColor = e.target.value;
-    colorBtn.style.background = newColor;
-    albums[currentIndex].color = newColor;
-    
-    const currentCD = document.getElementById(`cd-${currentIndex}`);
-    currentCD.querySelector('.text-top').style.color = newColor;
-    currentCD.querySelector('.text-bottom').style.color = newColor;
+    const color = e.target.value;
+    colorBtn.style.background = color;
+    albums[currentIndex].color = color;
+    document.getElementById(`cd-${currentIndex}`).querySelector('.cd-label').style.color = color;
 };
 
 init();
