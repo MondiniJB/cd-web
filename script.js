@@ -1,70 +1,69 @@
-let scene, camera, renderer, disc, pointLight;
+const albums = [
+    { name: 'Hell', color: '#ff3300' },
+    { name: 'FKA', color: '#00f2ff' },
+    { name: 'Burial', color: '#00ff66' },
+    { name: 'Hello', color: '#ff00ff' },
+    { name: 'Trial', color: '#ffff00' }
+];
+
+let currentIndex = 2;
+const stack = document.getElementById('cdStack');
+const dotContainer = document.getElementById('navDots');
 
 function init() {
-    // 1. Escena y Cámara
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
+    albums.forEach((album, i) => {
+        // Crear CD
+        const cd = document.createElement('div');
+        cd.className = 'cd';
+        cd.id = `cd-${i}`;
+        cd.innerHTML = `<span class="cd-label" style="color: ${album.color}">${album.name}</span>`;
+        stack.appendChild(cd);
 
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-    // 2. Creación del CD (Cilindro muy plano)
-    const geometry = new THREE.CylinderGeometry(1.5, 1.5, 0.05, 64);
-    
-    // Material con brillo metálico
-    const material = new THREE.MeshStandardMaterial({
-        color: 0xffffff,
-        metalness: 0.9,
-        roughness: 0.1,
+        // Crear Dot
+        const dot = document.createElement('div');
+        dot.className = i === currentIndex ? 'dot active' : 'dot';
+        dotContainer.appendChild(dot);
     });
-
-    disc = new THREE.Mesh(geometry, material);
-    disc.rotation.x = Math.PI / 2.5; // Inclinación inicial como en el video
-    scene.add(disc);
-
-    // 3. Luces
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
-
-    pointLight = new THREE.PointLight(0x00ffcc, 2, 10);
-    pointLight.position.set(2, 2, 2);
-    scene.add(pointLight);
-
-    animate();
+    updateStack();
 }
 
-function animate() {
-    requestAnimationFrame(animate);
+function updateStack() {
+    const cds = document.querySelectorAll('.cd');
+    const dots = document.querySelectorAll('.dot');
     
-    // Rotación constante del disco
-    if (disc) {
-        disc.rotation.y += 0.01;
-    }
-    
-    renderer.render(scene, camera);
+    document.getElementById('currentTitle').innerText = albums[currentIndex].name;
+
+    cds.forEach((cd, i) => {
+        const offset = i - currentIndex;
+        
+        // Lógica de acumulación a lo ancho
+        const translateX = offset * 250; 
+        const translateZ = -Math.abs(offset) * 200;
+        const rotateY = offset * -25;
+        const opacity = Math.abs(offset) > 2 ? 0 : 1;
+
+        cd.style.transform = `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg)`;
+        cd.style.opacity = opacity;
+        cd.style.zIndex = 100 - Math.abs(offset);
+        
+        dots[i].className = i === currentIndex ? 'dot active' : 'dot';
+    });
 }
 
-// 4. Interacción con el Color Picker
+function move(dir) {
+    currentIndex = Math.max(0, Math.min(albums.length - 1, currentIndex + dir));
+    updateStack();
+}
+
+// Color Picker Funcional
 const colorBtn = document.getElementById('colorBtn');
-const colorPicker = document.getElementById('colorPicker');
+const picker = document.getElementById('colorPicker');
 
-colorBtn.addEventListener('click', () => colorPicker.click());
-
-colorPicker.addEventListener('input', (e) => {
-    const newColor = e.target.value;
-    colorBtn.style.background = newColor;
-    
-    // Cambiar la luz de la escena 3D según el selector
-    pointLight.color.set(newColor);
-});
-
-// Manejo de Resizing
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
+colorBtn.onclick = () => picker.click();
+picker.oninput = (e) => {
+    colorBtn.style.background = e.target.value;
+    const labels = document.querySelectorAll('.cd-label');
+    labels[currentIndex].style.color = e.target.value;
+};
 
 init();
