@@ -1,30 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Interactive Web System</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <title>CD Visualizer Interface</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-  <div class="container">
-    <h1 class="title">Interactive System</h1>
+    <div id="canvas-container"></div>
 
-    <div class="grid">
-      <div class="card" data-id="1">Item 1</div>
-      <div class="card" data-id="2">Item 2</div>
-      <div class="card" data-id="3">Item 3</div>
-      <div class="card" data-id="4">Item 4</div>
+    <div class="ui-overlay">
+        <div class="bottom-bar">
+            <div class="controls-left">
+                <div class="color-preview" id="colorBtn"></div>
+                <input type="color" id="colorPicker" value="#00ffcc" style="display:none">
+            </div>
+            
+            <div class="timeline-container">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+
+            <div class="controls-right">
+                <button class="btn">prev</button>
+                <button class="btn">next</button>
+            </div>
+        </div>
+        
+        <div class="album-info">
+            <h2 id="albumName">Burial</h2>
+        </div>
     </div>
 
-    <div class="modal hidden">
-      <div class="modal-content">
-        <span class="close">×</span>
-        <p id="modal-text"></p>
-      </div>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
