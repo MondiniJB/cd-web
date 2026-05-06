@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Web System</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="title">Interactive System</h1>
+
+    <div class="grid">
+      <div class="card" data-id="1">Item 1</div>
+      <div class="card" data-id="2">Item 2</div>
+      <div class="card" data-id="3">Item 3</div>
+      <div class="card" data-id="4">Item 4</div>
+    </div>
+
+    <div class="modal hidden">
+      <div class="modal-content">
+        <span class="close">×</span>
+        <p id="modal-text"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
